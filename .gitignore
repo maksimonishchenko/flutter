@@ -1,5 +1,6 @@
 # Miscellaneous
 *.class
+*.dwlt
 *.lock
 *.log
 *.pyc
@@ -87,3 +88,12 @@ example/unity/DemoApp/test
 example/ios/UnityLibrary
 example/android/unityLibrary
 example/web/unityLibrary
+
+#Unity Project Related
+example/unity/DemoApp/[Ll]ibrary/
+example/unity/DemoApp/[Tt]emp/
+example/unity/DemoApp/[Oo]bj/
+example/unity/DemoApp/[Bb]uild/
+example/unity/DemoApp/[Bb]uilds/
+example/unity/DemoApp/[Ll]ogs/
+example/unity/DemoApp/[Uu]ser[Ss]ettings/

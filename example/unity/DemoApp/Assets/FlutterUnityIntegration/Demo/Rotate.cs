@@ -41,5 +41,6 @@ public class Rotate : MonoBehaviour, IEventSystemHandler
     {
         float value = float.Parse(message);
         RotateAmount = new Vector3(value, value, value);
+        Debug.Log("SetRotationSpeed" + message);
     }
 }
