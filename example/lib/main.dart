@@ -1,20 +1,29 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_unity_widget_example/screens/no_interaction_screen.dart';
-import 'package:flutter_unity_widget_example/screens/orientation_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_unity_widget_example/screens/message_screen.dart';
+import 'package:flutter_unity_widget_example/screens/mock_game_screen.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'menu_screen.dart';
-import 'screens/api_screen.dart';
-import 'screens/loader_screen.dart';
-import 'screens/simple_screen.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter_unity_widget_example/web_view.dart';
+import 'package:flutter_unity_widget_example/screens/web_view.dart';
+import 'package:mobile_number/mobile_number.dart';
 
 void main() async{
+
+  final mockGameWidget  = StreamProvider<InternetConnectionStatus>(
+      initialData: InternetConnectionStatus.connected,
+      create: (_) {
+        return InternetConnectionChecker().onStatusChange;
+      },
+      child: const MaterialApp(
+        title: 'Flutter Demo',
+        home: SimpleScreen(),
+      ));
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -23,16 +32,14 @@ void main() async{
 
   if(prefsUrl != null && prefsUrl != "")
   {
-    //todo: check connection show no connection screen
     print('saved prefsUrl read succesfully '+ prefsUrl + ' runAPp WebViewExample : main.dart');
-    runApp(WebViewExample(serverAdress: prefsUrl));
+    runApp(WebViewWidget(serverAdress: prefsUrl));
     return;
   }
-  //runApp(MyApp());
-
        print('no prefsUrl saved tring to fetch from firebase : main.dart');
 
        try {
+         //throw new Exception('some firebase exception'); test error message screen
          await Firebase.initializeApp(
            options: DefaultFirebaseOptions.currentPlatform,
          );
@@ -51,24 +58,22 @@ void main() async{
          print('activateResult'+ activateResult.toString() + ' : main.dart');
 
          String url = remoteConfig.getString('url');
-
-         if (url == null || url == "" || checkIsEmu() == true)//todo: check no sim
-             {
-           print('  url null or url empty or emulator open mock game : main.dart');
-           //todo: add and open mock game
-         } else
+         final iEmulator = await checkIsEmu();
+         final isNoSim =  await checkIsNoSim();
+         print('  url   null or url empty. isemulator '+ iEmulator.toString() + ' isNoSim ' + isNoSim.toString() + ' :main.dart');
+         if (url == null || url == "" || iEmulator == true || isNoSim == true)
          {
-           //todo: check connection show no connection screen
+           runApp(mockGameWidget);
+         }
+         else
+         {
            await prefs.setString("url", url);
            print(url + '   is url string setted to shared preferences local store run web view  : main.dart');
-           runApp(WebViewExample(serverAdress: prefsUrl));
+           runApp(WebViewWidget(serverAdress: prefsUrl));
          }
        } catch (exception) {
-         //todo: add and show error firebase screen
-         print(exception.toString() + ' happen show exception screen : main.dart');
+         runApp(MessageScreen(msg: exception.toString()));
        }
-       //runApp(MyApp());
-
 }
 
 checkIsEmu() async {
@@ -101,25 +106,23 @@ checkIsEmu() async {
   return result && !em.isPhysicalDevice;
 }
 
-//class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-//  @override
-//  Widget build(BuildContext context) {
-//    return MaterialApp(
-//     title: 'Flutter Unity Demo',
-//      theme: ThemeData(
-//        primarySwatch: Colors.blue,
-//        visualDensity: VisualDensity.adaptivePlatformDensity,
-//      ),
-//      initialRoute: '/',
-//      routes: {
-//        '/': (context) => MenuScreen(),
-//        '/simple': (context) => SimpleScreen(),
-//        '/loader': (context) => LoaderScreen(),
-//        '/orientation': (context) => OrientationScreen(),
-//        '/api': (context) => ApiScreen(),
-//       '/none': (context) => NoInteractionScreen(),
-//      },
-//    );
-//  }
-//}
+checkIsNoSim() async
+{
+  if (!await MobileNumber.hasPhonePermission) {
+    await MobileNumber.requestPhonePermission;
+    if(MobileNumber.hasPhonePermission == false)
+      {
+        print('hasPhonePermission == false : checkIsNoSim() main.dart');
+        return true;
+      }
+  }
+
+  List<SimCard> _simCard = <SimCard>[];
+  try {
+    _simCard = (await MobileNumber.getSimCards);
+  } on PlatformException catch (e) {
+    print("Failed to get mobile number because of '${e.message}'");
+  }
+  print('simcard Count '  + _simCard.length.toString());
+  return _simCard.length <= 0;
+}
