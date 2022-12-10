@@ -9,11 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter_unity_widget_example/main.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
   testWidgets('Verify Platform version', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+    await tester.pumpWidget(WebView());// probably need to provide page adress for a webview
 
     // Verify that platform version is retrieved.
     expect(

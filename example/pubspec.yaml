@@ -10,14 +10,18 @@ environment:
 
 dependencies:
   cupertino_icons: ^1.0.0
+  device_info_plus: ^8.0.0
+  firebase_analytics: ^10.0.7
   firebase_core: ^2.4.0
   firebase_remote_config: ^3.0.7
   flutter:
     sdk: flutter
+
   flutter_unity_widget:
     path: ../
   pointer_interceptor: ^0.9.3+2
-
+  shared_preferences: ^2.0.15
+  webview_flutter: ^2.8.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
