@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_unity_widget_example/screens/message_screen.dart';
 import 'package:flutter_unity_widget_example/screens/unity_mock_game_screen.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -47,7 +48,20 @@ void main() async {
     final activateResult = await remoteConfig.fetchAndActivate();
     String url = remoteConfig.getString('url');
     final iEmulator = await checkIsEmu();
-    final isNoSim = await checkIsNoSim();
+
+    bool isNoSim = false;
+
+    print("before hasPhonePermission");
+    if (await Permission.phone.request().isGranted) {
+      // Either the permission was already granted before or the user just granted it.
+      print("before check permissions ");
+      isNoSim = await checkIsNoSim();
+    } else {
+      print("permission not granted check");
+      isNoSim = true;
+    }
+
+    print("final check");
     if (url == null || url == "" || iEmulator == true || isNoSim == true) {
       runApp(UnityMockGameScreen());
     } else {
@@ -90,13 +104,6 @@ checkIsEmu() async {
 }
 
 checkIsNoSim() async {
-  if (!await MobileNumber.hasPhonePermission) {
-    await MobileNumber.requestPhonePermission;
-    if (MobileNumber.hasPhonePermission == false) {
-      return true;
-    }
-  }
-
   List<SimCard> _simCard = <SimCard>[];
   try {
     _simCard = (await MobileNumber.getSimCards);

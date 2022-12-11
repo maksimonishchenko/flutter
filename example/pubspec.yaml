@@ -21,6 +21,7 @@ dependencies:
     path: ../
   internet_connection_checker: ^1.0.0+1
   mobile_number: ^2.1.1
+  permission_handler: ^10.2.0
   pointer_interceptor: ^0.9.3+2
   provider: ^6.0.4
   shared_preferences: ^2.0.15
