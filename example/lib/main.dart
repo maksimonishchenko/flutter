@@ -30,7 +30,6 @@ void main() async {
     return;
   }
   try {
-    //throw new Exception('some firebase exception'); test error message screen
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
