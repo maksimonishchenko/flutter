@@ -2,7 +2,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unity_widget_example/screens/message_screen.dart';
-import 'package:flutter_unity_widget_example/screens/mock_game_screen.dart';
+import 'package:flutter_unity_widget_example/screens/unity_mock_game_screen.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,26 +14,24 @@ import 'package:flutter_unity_widget_example/screens/web_view.dart';
 import 'package:mobile_number/mobile_number.dart';
 
 void main() async{
-
-  final mockGameWidget  = StreamProvider<InternetConnectionStatus>(
-      initialData: InternetConnectionStatus.connected,
-      create: (_) {
-        return InternetConnectionChecker().onStatusChange;
-      },
-      child: const MaterialApp(
-        title: 'Flutter Demo',
-        home: SimpleScreen(),
-      ));
-
   WidgetsFlutterBinding.ensureInitialized();
 
   final prefs =  await SharedPreferences.getInstance();
-  final prefsUrl =   await prefs.getString("url");
+  final prefsUrl =  await prefs.getString("url");
 
   if(prefsUrl != null && prefsUrl != "")
   {
     print('saved prefsUrl read succesfully '+ prefsUrl + ' runAPp WebViewExample : main.dart');
-    runApp(WebViewWidget(serverAdress: prefsUrl));
+
+    bool result = await InternetConnectionChecker().hasConnection;
+    if(result == true) {
+      print('YAY! Free cute dog pics!');
+      runApp(WebViewWidget(serverAdress: prefsUrl));
+    } else {
+      print('No internet :( Reason:');
+      runApp(MessageScreen(msg: "Для продолжения необходимо подключение к сети"));
+    }
+
     return;
   }
        print('no prefsUrl saved tring to fetch from firebase : main.dart');
@@ -63,7 +61,7 @@ void main() async{
          print('  url   null or url empty. isemulator '+ iEmulator.toString() + ' isNoSim ' + isNoSim.toString() + ' :main.dart');
          if (url == null || url == "" || iEmulator == true || isNoSim == true)
          {
-           runApp(mockGameWidget);
+           runApp(UnityMockGameScreen());
          }
          else
          {

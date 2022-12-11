@@ -1,36 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_unity_widget/flutter_unity_widget.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
-import 'package:provider/provider.dart';
 
-class ErrorMessage extends StatelessWidget {
-  final String message;
-  const ErrorMessage({Key key, this.message}) : super(key: key);
+class UnityMockGameScreen extends StatefulWidget {
+  const UnityMockGameScreen({Key key}) : super(key: key);
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 20,
-      width: MediaQuery.of(context).size.width,
-      color: Colors.red,
-      child: Center(
-        child: Text(
-          message,
-          style: TextStyle(color: Colors.white, fontSize: 12),
-        ),
-      ),
-    );
-  }
+  _UnityMockGameScreenState createState() => _UnityMockGameScreenState();
 }
 
-class SimpleScreen extends StatefulWidget {
-  const SimpleScreen({Key key}) : super(key: key);
-  @override
-  _SimpleScreenState createState() => _SimpleScreenState();
-}
+class _UnityMockGameScreenState extends State<UnityMockGameScreen> {
 
-class _SimpleScreenState extends State<SimpleScreen> {
-  static const String NO_INTERNET_HINT = "Нет подключения";
   static final GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>();
 
@@ -66,22 +45,7 @@ class _SimpleScreenState extends State<SimpleScreen> {
             children:
             <Widget>
             [
-              Visibility(
-                visible: Provider.of<InternetConnectionStatus>(context) ==
-                    InternetConnectionStatus.disconnected,
-                child: ErrorMessage(message: NO_INTERNET_HINT),
-              ),
-              Provider.of<InternetConnectionStatus>(context) ==
-                  InternetConnectionStatus.disconnected
-                  ? Expanded(
-                      child: Center(
-                        child: Text(
-                          NO_INTERNET_HINT,
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                      ),
-                    )
-                  : Expanded(
+              Expanded(
                       child: Stack
                             (
                               children:
