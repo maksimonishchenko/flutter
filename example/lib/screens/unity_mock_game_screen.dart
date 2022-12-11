@@ -2,29 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
-class UnityMockGameScreen extends StatefulWidget {
+class UnityMockGameScreen extends StatelessWidget {
+
   const UnityMockGameScreen({Key key}) : super(key: key);
   @override
-  _UnityMockGameScreenState createState() => _UnityMockGameScreenState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: _UnityMockGameScreenState()
+    );
+  }
 }
 
-class _UnityMockGameScreenState extends State<UnityMockGameScreen> {
+class _UnityMockGameScreenState extends StatelessWidget {
 
   static final GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>();
 
   UnityWidgetController _unityWidgetController;
-  double _sliderValue = 0.0;
+  static const String score = "Очки:";
+  String scoreValue = "0";
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
     _unityWidgetController.dispose();
-    super.dispose();
   }
 
   @override
@@ -32,7 +33,7 @@ class _UnityMockGameScreenState extends State<UnityMockGameScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('SimpleScreen'),
+        title: Text('Tetris'),
       ),
       body: Card(
           margin: const EdgeInsets.all(0),
@@ -68,21 +69,7 @@ class _UnityMockGameScreenState extends State<UnityMockGameScreen> {
                                       elevation: 10,
                                       child: Column(
                                         children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 20),
-                                            child: Text("Rotation speed:"),
-                                          ),
-                                          Slider(
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _sliderValue = value;
-                                              });
-                                              setRotationSpeed(value.toString());
-                                            },
-                                            value: _sliderValue,
-                                            min: 0.0,
-                                            max: 1.0,
-                                          ),
+                                          Text("Score:" + scoreValue),
                                         ],
                                       ),
                                     ),
@@ -96,16 +83,9 @@ class _UnityMockGameScreenState extends State<UnityMockGameScreen> {
       ));
   }
 
-  void setRotationSpeed(String speed) {
-    _unityWidgetController.postMessage(
-      'Cube',
-      'SetRotationSpeed',
-      speed,
-    );
-  }
-
   void onUnityMessage(message) {
     print('Received message from unity: ${message.toString()}');
+    scoreValue = message;
   }
 
   void onUnitySceneLoaded(SceneLoaded scene) {

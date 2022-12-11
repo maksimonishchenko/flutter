@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -56,16 +54,30 @@ class WebViewExampleState extends StatelessWidget {
 
   void onPageFinished(String url)
   {
-    SharedPreferences.getInstance().then(
-            (prefs) => {
-              print('saved cookies for url ' + url + ' : ' + prefs.getString("cookies" + url))
-            });
-
-    if(webViewController != null)
-      webViewController.runJavascriptReturningResult('document.cookie')
-        .then((cookies) => {
+    try
+    {
       SharedPreferences.getInstance().then(
-              (prefs) => {prefs.setString("cookies" + url, cookies)})
-    });
+              (prefs) => {
+            print('saved cookies for url ' + url + ' : ' + prefs.getString("cookies" + url))
+          });
+    }
+    catch(exception)
+    {
+      print('loading cookies for url ' + url + ' : error ' + exception.toString());
+    }
+
+    try
+    {
+      if(webViewController != null)
+        webViewController.runJavascriptReturningResult('document.cookie')
+            .then((cookies) => {
+          SharedPreferences.getInstance().then(
+                  (prefs) => {prefs.setString("cookies" + url, cookies)})
+        });
+    }
+    catch(exception)
+    {
+      print('saving cookies for url ' + url + ' : error ' + exception.toString());
+    }
   }
 }

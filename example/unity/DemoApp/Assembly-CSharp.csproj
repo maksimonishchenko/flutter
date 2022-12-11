@@ -47,6 +47,8 @@
      <Compile Include="Assets\FlutterUnityIntegration\Demo\GameManager.cs" />
      <Compile Include="Assets\FlutterUnityIntegration\UnityMessageManager.cs" />
      <Compile Include="Assets\FlutterUnityIntegration\SingletonMonoBehaviour.cs" />
+     <Compile Include="Assets\Scripts\TetrisBlock.cs" />
+     <Compile Include="Assets\Scripts\SpawnTetromino.cs" />
      <None Include="Assets\FlutterUnityIntegration\JsonDotNet\link.xml" />
      <None Include="Assets\FlutterUnityIntegration\JsonDotNet\Assemblies\AOT\Newtonsoft.Json.dll.txt" />
      <None Include="Assets\FlutterUnityIntegration\README.txt" />
