@@ -27,7 +27,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Main Menu'),
+        title: Text('Главное меню'),
         centerTitle: true,
       ),
       backgroundColor: Colors.grey,
@@ -48,7 +48,7 @@ class GameScreen extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text('Play'),
+        title: Text('Игра'),
         centerTitle: true,
       ),
       backgroundColor: Colors.brown[300],
