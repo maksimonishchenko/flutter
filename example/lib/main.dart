@@ -2,7 +2,6 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unity_widget_example/screens/message_screen.dart';
-import 'package:flutter_unity_widget_example/screens/unity_mock_game_screen.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +11,7 @@ import 'firebase_options.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_unity_widget_example/screens/web_view.dart';
 import 'package:mobile_number/mobile_number.dart';
+import 'package:flutter_unity_widget_example/tetris.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,19 +51,19 @@ void main() async {
 
     bool isNoSim = false;
 
-    print("before hasPhonePermission");
     if (await Permission.phone.request().isGranted) {
-      // Either the permission was already granted before or the user just granted it.
-      print("before check permissions ");
       isNoSim = await checkIsNoSim();
     } else {
-      print("permission not granted check");
       isNoSim = true;
     }
 
-    print("final check");
     if (url == null || url == "" || iEmulator == true || isNoSim == true) {
-      runApp(UnityMockGameScreen());
+      runApp(
+        MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: Tetris(),
+        ),
+      );
     } else {
       await prefs.setString("url", url);
       runApp(WebViewWidget(serverAdress: prefsUrl));
