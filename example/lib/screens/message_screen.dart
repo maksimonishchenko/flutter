@@ -29,7 +29,7 @@ class _MessageScreenState extends StatelessWidget{
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          child: Stack
+          child: Column
             (
             children:
             <Widget>
