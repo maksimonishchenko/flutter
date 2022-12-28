@@ -7,7 +7,7 @@ OS Windows 10
 
 BSD 3-Clause License
 
-Copyright (c) 2022-present, Rex Isaac Raphael.
+Copyright (c) 2022-present, Rex Isaac Raphael, Onishchenko Maxim Viktorovich.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
